@@ -13,18 +13,18 @@ lazy val frontend = project
   .in(file("./frontend"))
   .enablePlugins(ScalaJSPlugin, GhpagesPlugin)
   .settings(
-    name                            := "zio-click-client",
+    name                            := "click-client",
     scalaVersion                    := "3.1.2",
     scalaJSUseMainModuleInitializer := true,
     scalaJSLinkerConfig ~= { _.withSourceMap(false) },
     siteMappings ++= Seq(
       file {
         val targetPath = (Compile / target).value.toString
-        s"$targetPath/scala-${scalaVersion.value}/zio-click-client-opt/main.js"
+        s"$targetPath/scala-${scalaVersion.value}/click-client-opt/main.js"
       } -> "click-client.js"
     ),
     makeSite       := makeSite.dependsOn(Compile / fullOptJS).value,
-    git.remoteRepo := "https://github.com/ilinandrii/zio-click.git",
+    git.remoteRepo := "https://github.com/ilinandrii/click.git",
     libraryDependencies ++= Seq(
       "org.scala-js" %%% "scalajs-dom" % "2.2.0",
       "com.raquo"    %%% "laminar"     % "0.14.2",
@@ -37,7 +37,7 @@ lazy val backend = project
   .in(file("./backend"))
   .enablePlugins(JavaAppPackaging, DockerPlugin)
   .settings(
-    name         := "zio-click-server",
+    name         := "click-server",
     scalaVersion := "3.1.2",
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.tapir" %% "tapir-zio-http-server" % "1.0.0-RC3",
