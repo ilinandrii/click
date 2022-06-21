@@ -11,20 +11,12 @@ ThisProject / version         := "0.1.0-SNAPSHOT"
 
 lazy val frontend = project
   .in(file("./frontend"))
-  .enablePlugins(ScalaJSPlugin, GhpagesPlugin)
+  .enablePlugins(ScalaJSPlugin)
   .settings(
     name                            := "click-client",
     scalaVersion                    := "3.1.2",
     scalaJSUseMainModuleInitializer := true,
     scalaJSLinkerConfig ~= { _.withSourceMap(false) },
-    siteMappings ++= Seq(
-      file {
-        val targetPath = (Compile / target).value.toString
-        s"$targetPath/scala-${scalaVersion.value}/click-client-opt/main.js"
-      } -> "click-client.js"
-    ),
-    makeSite       := makeSite.dependsOn(Compile / fullOptJS).value,
-    git.remoteRepo := "https://github.com/ilinandrii/click.git",
     libraryDependencies ++= Seq(
       "org.scala-js" %%% "scalajs-dom" % "2.2.0",
       "com.raquo"    %%% "laminar"     % "0.14.2",
@@ -49,4 +41,20 @@ lazy val backend = project
       "com.softwaremill.sttp.tapir" %% "tapir-json-zio"        % "1.0.0-RC3"
     ),
     testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
+  )
+
+lazy val site = project
+  .in(file("./site"))
+  .enablePlugins(GhpagesPlugin)
+  .settings(
+    siteMappings ++= Seq(
+      file(s"${baseDirectory.value}/index.html") -> "index.html",
+      file {
+        val targetPath        = (frontend / Compile / target).value.toString
+        val frontScalaVersion = (frontend / scalaVersion).value
+        s"$targetPath/scala-$frontScalaVersion/click-client-opt/main.js"
+      } -> "click-client.js"
+    ),
+    makeSite       := makeSite.dependsOn(frontend / Compile / fullOptJS).value,
+    git.remoteRepo := "https://github.com/ilinandrii/click.git"
   )
