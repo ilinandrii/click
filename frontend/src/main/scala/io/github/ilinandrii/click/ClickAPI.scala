@@ -3,7 +3,7 @@ import com.raquo.laminar.api.L.*
 import com.raquo.laminar.api.L
 import io.laminext.fetch.*
 
-object ClickClient:
+object ClickAPI:
   val baseUrl = "https://zio-click.herokuapp.com"
 
   def getClicks(userUUID: String): EventStream[Int] = {

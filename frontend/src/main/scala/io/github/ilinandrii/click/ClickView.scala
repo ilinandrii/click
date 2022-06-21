@@ -11,8 +11,8 @@ object ClickView:
     val clickBus = EventBus[Unit]
     val clickStream = user.flatMap { user =>
       val clickEvents = clickBus.events
-        .flatMap(_ => ClickClient.makeClick(user).debugLogEvents())
-      EventStream.merge(ClickClient.getClicks(user), clickEvents)
+        .flatMap(_ => ClickAPI.makeClick(user).debugLogEvents())
+      EventStream.merge(ClickAPI.getClicks(user), clickEvents)
     }
 
     class ClickButton:
