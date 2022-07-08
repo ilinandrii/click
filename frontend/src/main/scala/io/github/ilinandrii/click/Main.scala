@@ -9,4 +9,4 @@ import io.laminext.fetch.*
 import com.raquo.airstream.core.EventStream
 import scala.util.control.NonFatal
 
-@main def entrypoint = ClickView.render(ClickUser.getUser)
+@main def entrypoint = View.render

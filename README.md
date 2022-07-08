@@ -5,7 +5,8 @@
 - ZIO 2
 - zio-http
 - Tapir 1.x
-- Laminar, Laminext
+- Laminar
+- Laminext
 
 [**CHECK DEMO**](https://ilinandrii.github.io/click/)
 
@@ -64,7 +65,8 @@ Built with [sbt-site](https://www.scala-sbt.org/sbt-site/) plugin which is set u
 To publish a newer version of a site (push a `target/site` content to `gh-pages` branch) an [sbt-ghpages](https://www.scala-sbt.org/sbt-site/publishing.html) plugin is used.
 
 ## TODO:
-- add a username
+- add a username ✅
+- move component style to css
 - make a leaderboard page
 - add persistence (`quill`, `postgresql`)
 - warm up `zio-http` server after restart

@@ -5,18 +5,35 @@ import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
-ThisProject / scalaVersion    := "3.1.2"
-ThisProject / organization    := "io.github.ilinandrii"
-ThisProject / version         := "0.1.0-SNAPSHOT"
+ThisBuild / scalaVersion      := "3.1.2"
+ThisBuild / organization      := "io.github.ilinandrii"
+ThisBuild / version           := "0.1.0-SNAPSHOT"
+
+lazy val sharedSettings = Seq(
+  libraryDependencies ++= Seq(
+    "dev.zio"                     %%% "zio-json"       % "0.3.0-RC8",
+    "com.softwaremill.sttp.tapir" %%% "tapir-json-zio" % "1.0.0-RC3"
+  )
+)
+
+lazy val model = project
+  .in(file("model"))
+  .enablePlugins(ScalaJSPlugin)
+  .settings(
+    name := "click-model",
+    sharedSettings
+  )
 
 lazy val frontend = project
-  .in(file("./frontend"))
+  .in(file("frontend"))
+  .dependsOn(model)
   .enablePlugins(ScalaJSPlugin)
   .settings(
     name                            := "click-client",
-    scalaVersion                    := "3.1.2",
     scalaJSUseMainModuleInitializer := true,
-    scalaJSLinkerConfig ~= { _.withSourceMap(false) },
+    scalaJSLinkerConfig ~= { _.withSourceMap(true) },
+    scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.ESModule) },
+    sharedSettings,
     libraryDependencies ++= Seq(
       "org.scala-js" %%% "scalajs-dom" % "2.2.0",
       "com.raquo"    %%% "laminar"     % "0.14.2",
@@ -26,25 +43,24 @@ lazy val frontend = project
   )
 
 lazy val backend = project
-  .in(file("./backend"))
+  .in(file("backend"))
+  .dependsOn(model)
   .enablePlugins(JavaAppPackaging, DockerPlugin)
   .settings(
-    name         := "click-server",
-    scalaVersion := "3.1.2",
+    sharedSettings,
+    name := "click-server",
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.tapir" %% "tapir-zio-http-server" % "1.0.0-RC3",
       "io.d11"                      %% "zhttp"                 % "2.0.0-RC9",
-      "io.d11"                      %% "zhttp-test"            % "2.0.0-RC9" % Test,
+      // "io.d11"                      %% "zhttp-test"            % "2.0.0-RC9" % Test,
       "dev.zio"                     %% "zio"                   % "2.0.0-RC6",
-      "dev.zio"                     %% "zio-test"              % "2.0.0-RC6" % Test,
-      "dev.zio"                     %% "zio-json"              % "0.3.0-RC8",
-      "com.softwaremill.sttp.tapir" %% "tapir-json-zio"        % "1.0.0-RC3"
+      // "dev.zio"                     %% "zio-test"              % "2.0.0"     % Test
     ),
     testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
   )
 
 lazy val site = project
-  .in(file("./site"))
+  .in(file("site"))
   .enablePlugins(GhpagesPlugin)
   .settings(
     siteMappings ++= Seq(
