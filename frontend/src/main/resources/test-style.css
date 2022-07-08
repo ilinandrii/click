@@ -1,0 +1,9 @@
+input.name-input {
+    font-size: calc(1.625rem + 4.5vw) !important;
+}
+
+@media (min-width: 1200px) {
+    input.name-input {
+        font-size: 5rem !important;
+    }
+}
