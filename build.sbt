@@ -31,7 +31,7 @@ lazy val frontend = project
   .settings(
     name                            := "click-client",
     scalaJSUseMainModuleInitializer := true,
-    scalaJSLinkerConfig ~= { _.withSourceMap(true) },
+    // scalaJSLinkerConfig ~= { _.withSourceMap(true) },
     scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.ESModule) },
     sharedSettings,
     libraryDependencies ++= Seq(
@@ -49,6 +49,11 @@ lazy val backend = project
   .settings(
     sharedSettings,
     name := "click-server",
+
+    dockerBaseImage := "eclipse-temurin:17-jre-alpine",
+    dockerRepository := Some("registry.heroku.com"),
+    dockerAlias := dockerAlias.value.withName("io-github-ilinandrii-click/web"),
+
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.tapir" %% "tapir-zio-http-server" % "1.0.0-RC3",
       "io.d11"                      %% "zhttp"                 % "2.0.0-RC9",
@@ -65,6 +70,7 @@ lazy val site = project
   .settings(
     siteMappings ++= Seq(
       file(s"${baseDirectory.value}/index.html") -> "index.html",
+      file(s"${baseDirectory.value}/style.css") -> "style.css",
       file {
         val targetPath        = (frontend / Compile / target).value.toString
         val frontScalaVersion = (frontend / scalaVersion).value
@@ -72,5 +78,6 @@ lazy val site = project
       } -> "click-client.js"
     ),
     makeSite       := makeSite.dependsOn(frontend / Compile / fullOptJS).value,
+    ghpagesPushSite := ghpagesPushSite.dependsOn(makeSite).value,
     git.remoteRepo := "https://github.com/ilinandrii/click.git"
   )

@@ -72,8 +72,7 @@ To publish a newer version of a site (push a `target/site` content to `gh-pages`
 - warm up `zio-http` server after restart
 - fully support mobile view
 - serve swagger UI documentation
-- use lighter weight base docker image for backend
+- use lighter weight base docker image for backend ✅
 - configurable server port 
 - configurable client `baseUrl` for dev and prod environments through env or command line properties
 - research functionality of **GitHub Actions** to automate build, site publishing process.
-
